@@ -1,0 +1,21 @@
+#!/bin/bash
+
+RESOLUTIONS="16 24 32 48 128"
+for r in $RESOLUTIONS
+do
+    rm -rf $r
+done
+
+for i in `ls *.svg`
+do
+    for r in $RESOLUTIONS
+    do
+	mkdir $r
+	inkscape --without-gui --export-png=$r/`basename $i svg`png $i \
+	    --export-width=$r --export-height=$r
+    done
+done
+
+# --export-dpi=90
+# --query-width=128
+# --query-height=128
