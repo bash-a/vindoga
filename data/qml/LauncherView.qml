@@ -97,6 +97,7 @@ FocusScope {
             Text {
                 text: appname
                 wrapMode: wrap
+                horizontalAlignment: Text.AlignHCenter
                 width:catgrid.cellWidth
                 anchors.top: caticonimg.bottom
                 anchors.margins: 10
