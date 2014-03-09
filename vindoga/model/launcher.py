@@ -20,12 +20,10 @@
 from conda import api as capi
 
 from PySide import QtCore
+from PySide import QtGui as gui
 # from PySide.QtCore import Slot
 
 from vindoga.model.columnsmodel import ColumnsListModel
-
-apps = [dict(_appname='Spyder IDE',       _cmd='spyder',  _icopath='../../data/ico/128/app-spyder.png'),
-        dict(_appname='IPython Terminal', _cmd='ipython', _icopath='../../data/ico/128/app-ipython.png'),]
 
 class LauncherModel(ColumnsListModel):
     def __init__(self, parent=None):
@@ -43,8 +41,16 @@ class LauncherModel(ColumnsListModel):
     @QtCore.Slot(int)
     def launchApp(self, index):
         fn = self.apps[index]['_fn']
-        if not capi.app_is_installed(fn):
-            capi.app_install(fn)
-        capi.app_launch(fn)
-#         subprocess.call(apps[index]['_cmd'])
+        appname = self.apps[index]['_appname']
 
+        # Launch the app from Root or return None if does not exist
+        if capi.app_launch(fn):
+            return
+
+        ret = gui.QMessageBox.question(None, "%s" % appname, \
+                                       "Application is not installed.\nShould I install it?", \
+                                        gui.QMessageBox.Ok | gui.QMessageBox.Cancel, gui.QMessageBox.Ok)
+        if ret == gui.QMessageBox.Ok:
+            capi.app_install(fn)
+            capi.app_launch(fn)
+        return
